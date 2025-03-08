@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -30,7 +31,8 @@ func GenerateJWT() (string, error) {
 	return tokenString, nil
 }
 
-func ValidadateJWT(tokenString string) (*jwt.Token, error) {
+// Função para validar um token JWT
+func ValidateJWT(tokenString string) (*jwt.Token, error) {
 	// Fazer o parsing do token e validar
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
 		// Verificar se o algoritmo de assinatura está correto
@@ -49,3 +51,23 @@ func ValidadateJWT(tokenString string) (*jwt.Token, error) {
 // 2: Verifica se o método de assinatura é do tipo HMAC SHA256.
 // 3: Se tudo estiver certo, retorna o token validado.
 // 4: Caso ocorra um erro (exemplo: token inválido ou expirado), ele retorna um erro
+
+func main() {
+	// Gerar um JWT
+	token, err := GenerateJWT()
+	if err != nil {
+		log.Fatalf("Erro ao gerar token %v", err)
+	}
+	fmt.Println("Token JWT gerado:", token)
+
+	//Validar o JWT gerado
+	validToken, err := ValidateJWT(token)
+	if err != nil {
+		log.Fatalf("Erro ao validar token %v", err)
+	}
+	if validToken.Valid {
+		fmt.Println("Token válido!")
+	} else {
+		fmt.Println("Token inváliddo")
+	}
+}

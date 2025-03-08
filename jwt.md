@@ -32,3 +32,6 @@ HMACSHA256(
     base64UrlEncode(header) + "." +
     base64UrlEncode(payload),
     secret)
+
+go get github.com/golang-jwt/jwt/v5
+go install github.com/golang-jwt/jwt/v5@latest

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -28,3 +29,23 @@ func GenerateJWT() (string, error) {
 
 	return tokenString, nil
 }
+
+func ValidadateJWT(tokenString string) (*jwt.Token, error) {
+	// Fazer o parsing do token e validar
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Verificar se o algoritmo de assinatura está correto
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("método de assinatura inválido")
+		}
+		return jwtSecret, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return token, nil
+}
+
+// 1: Faz o parsing do token para extrair os dados e validar a assinatura.
+// 2: Verifica se o método de assinatura é do tipo HMAC SHA256.
+// 3: Se tudo estiver certo, retorna o token validado.
+// 4: Caso ocorra um erro (exemplo: token inválido ou expirado), ele retorna um erro
